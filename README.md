@@ -1,5 +1,5 @@
 
-#react-router-hash
+# react-router-hash
 
 A minimal router for react app, only supports hash url
 
@@ -9,7 +9,7 @@ React极简路由，仅支持hash url,可以采用两种方式进行路由配置
 
 第一种支持嵌套格式
 
-##第一种 支持嵌套格式
+## 第一种 支持嵌套格式
 ```javascript
 render((
     <Router root={Login} default={Login} /* sign="colon" */>    /*root配置根地址*/
@@ -28,7 +28,7 @@ render((
 ), document.getElementById('app'));
 ```
 
-##第二种 
+## 第二种 
 ```javascript
 let routers = {
     '/': Login,     /*  '/'配置根地址 */
@@ -45,7 +45,7 @@ render((
 ```
 
 
-##Usage 用法
+## Usage 用法
 
 ```javascript
 import Router from 'react-router-hash';
