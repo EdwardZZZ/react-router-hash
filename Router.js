@@ -69,10 +69,11 @@ var Router = React.createClass({
     matchRouter: function (route) {
         var _routers = this.routers, 
             _route = (route === void 0 || route === '') ? '/' : route,
-            Component = _route ? _routers[_route] : _routers['/'],
+            Component = _route ? _routers[_route] : _routers['/'],  // 直接匹配返回
             routeParams = {},
             matchRoutesLen = this.matchRoutes.length
 
+        // 匹配已经转换成正则的路由路径
         if (!Component && matchRoutesLen !== 0) {
             for (var i = 0; i < matchRoutesLen; i++) {
                 var _router = this.matchRoutes[i],
@@ -85,6 +86,7 @@ var Router = React.createClass({
             }
         }
 
+        // 匹配未转换成正则的路由路径，同时将转换成路正则的路径添加到matchRoutes中
         if (!Component) {
             var _routesKeys = Object.keys(_routers)
             for (var i = 0, len = _routesKeys.length; i < len; i++) {
@@ -105,8 +107,14 @@ var Router = React.createClass({
             }
         }
 
+        // 未匹配到时匹配默认的
         if (!Component) {
             Component = _routers['default']
+        }
+
+        // 添加路径参数
+        if(route.indexOf('?') > -1 && !routeParams.params){
+            routeParams.params = route.substr(route.indexOf('?') + 1)
         }
 
         this.Component = Component

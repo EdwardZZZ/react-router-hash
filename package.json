@@ -1,13 +1,13 @@
 {
   "name": "react-router-hash",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "A react simple router, React极简路由",
   "main": "Router.js",
   "scripts": {
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/EdwardZZZ/npm"
+    "url": "https://github.com/EdwardZZZ/npm/react-router-hash"
   },
   "keywords": ["react", "router", "route", "hash", "react-component", "react-router", "react-router-hash"],
   "author": "edwardzzz@foxmail.com",

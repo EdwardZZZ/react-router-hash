@@ -74,7 +74,7 @@ render((
             <a href="#list">list</a>
             <a href="#aboutus">aboutus</a>
         </div>
-        <Router routers={routers} /* sign="colon" */ />
+        <Router routers={routers} />
     </div>
 ), document.getElementById('app'));
 
@@ -86,6 +86,8 @@ export default class List extends React.Component {
     render(){
         // get pn value
         console.log(this.props.pn)
+        // get hash params
+        console.log(this.props.params)
     }
 }
 
