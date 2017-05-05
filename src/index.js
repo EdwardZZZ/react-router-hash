@@ -22,6 +22,7 @@ export default class extends Component {
     constructor(props) {
         super();
         this.state = {
+            error: false,
             route: utils.getHash()
         }
     }
@@ -51,6 +52,7 @@ export default class extends Component {
     componentDidMount() {
         window.addEventListener('hashchange', () => {
             this.setState({
+                error: false,
                 route: utils.getHash()
             })
         })
@@ -63,8 +65,8 @@ export default class extends Component {
 
     matchRouter(route) {
         let _routers = this.routers, 
-            _route = (route === void 0 || route === '') ? '/' : route,
-            Component = _route ? _routers[_route] : _routers['/'],  // 直接匹配返回
+            _route = (route === void 0 || route === '' || route === '/') ? '__root' : route,
+            Component = _routers[_route],  // 直接匹配返回
             routeParams = {},   // 返回的参数对象
             matchRoutesLen = this.matchRoutes.length
 
@@ -103,7 +105,7 @@ export default class extends Component {
 
         // 未匹配到时匹配默认的
         if (!Component) {
-            Component = _routers['default']
+            Component = _routers['__default']
         }
 
         // 添加路径参数
@@ -112,12 +114,17 @@ export default class extends Component {
         }
 
         this.Component = Component
-        this.routeParams = routeParams
+        this.routeProps = routeParams
     }
 
     render() {
         if(!this.Component)throw new Error('This route has not match component.', this.state.route)
-        return React.createElement(this.Component, this.routeParams)
-        // return <this.Component {...this.routeParams} />
+        if(this.state.error){
+            this.Component = this.routers['__error']
+            if(!this.Component)throw new Error('This route has not config "__error".')
+        }else{
+            this.routeProps.toErrorPage = () => {this.setState({error: true});}
+        }
+        return React.createElement(this.Component, this.routeProps)
     }
 }

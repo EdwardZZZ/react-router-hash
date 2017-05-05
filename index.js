@@ -10,6 +10,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _matchUrl = require('match-url');
+
+var _matchUrl2 = _interopRequireDefault(_matchUrl);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -17,8 +21,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var match = require('match-url');
 
 var utils = {
     getHash: function getHash() {
@@ -44,6 +46,7 @@ var _class = function (_Component) {
         var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this));
 
         _this.state = {
+            error: false,
             route: utils.getHash()
         };
         return _this;
@@ -83,6 +86,7 @@ var _class = function (_Component) {
 
             window.addEventListener('hashchange', function () {
                 _this3.setState({
+                    error: false,
                     route: utils.getHash()
                 });
             });
@@ -101,8 +105,8 @@ var _class = function (_Component) {
         key: 'matchRouter',
         value: function matchRouter(route) {
             var _routers = this.routers,
-                _route = route === void 0 || route === '' ? '/' : route,
-                Component = _route ? _routers[_route] : _routers['/'],
+                _route = route === void 0 || route === '' || route === '/' ? '__root' : route,
+                Component = _routers[_route],
                 routeParams = {},
                 matchRoutesLen = this.matchRoutes.length;
 
@@ -113,7 +117,7 @@ var _class = function (_Component) {
                         paramKeys = _matchRoutes$i.paramKeys,
                         component = _matchRoutes$i.component;
 
-                    routeParams = match.matchResult(_route, paramKeys, paramReg);
+                    routeParams = _matchUrl2.default.matchResult(_route, paramKeys, paramReg);
                     if (routeParams) {
                         Component = component;
                         break;
@@ -125,7 +129,7 @@ var _class = function (_Component) {
                 var _routesKeys = Object.keys(_routers);
                 for (var _i = 0, len = _routesKeys.length; _i < len; _i++) {
                     var _routeKey = _routesKeys[_i],
-                        ret = match.getRegAndKeys(_routeKey, this.props.sign);
+                        ret = _matchUrl2.default.getRegAndKeys(_routeKey, this.props.sign);
 
                     if (!ret) continue;
                     var paramReg = ret.paramReg,
@@ -136,7 +140,7 @@ var _class = function (_Component) {
 
                     delete _routers[_routeKey];
 
-                    routeParams = match.matchResult(_route, paramKeys, paramReg);
+                    routeParams = _matchUrl2.default.matchResult(_route, paramKeys, paramReg);
                     if (routeParams) {
                         Component = component;
                         break;
@@ -145,7 +149,7 @@ var _class = function (_Component) {
             }
 
             if (!Component) {
-                Component = _routers['default'];
+                Component = _routers['__default'];
             }
 
             if (route.indexOf('?') > -1 && !routeParams.params) {
@@ -153,13 +157,23 @@ var _class = function (_Component) {
             }
 
             this.Component = Component;
-            this.routeParams = routeParams;
+            this.routeProps = routeParams;
         }
     }, {
         key: 'render',
         value: function render() {
+            var _this4 = this;
+
             if (!this.Component) throw new Error('This route has not match component.', this.state.route);
-            return _react2.default.createElement(this.Component, this.routeParams);
+            if (this.state.error) {
+                this.Component = this.routers['__error'];
+                if (!this.Component) throw new Error('This route has not config "__error".');
+            } else {
+                this.routeProps.toErrorPage = function () {
+                    _this4.setState({ error: true });
+                };
+            }
+            return _react2.default.createElement(this.Component, this.routeProps);
         }
     }]);
 

@@ -7,12 +7,16 @@ React极简路由，仅支持hash url,可以采用两种方式进行路由配置
 
 支持简单正则格式，例如数字，这样在组件中获取的参数也是数字
 
-第一种支持嵌套格式
+
+## config
+__root  配置根路由，也hash值为空时展示的页面
+__default 配置默认路由，路由匹配失败时展示的页面
+__error  配置错误页面，当页面中调用this.props.toErrorPage()方法时展示的错误页面
 
 ## 第一种 支持嵌套格式
 ```javascript
 render((
-    <Router root={Login} default={Login} /* sign="colon" */>    /*root配置根地址*/
+    <Router __root={Login} __default={Login} __error={Error}>    /*__root配置根地址*/
         /* <Login path="/" /> root配置也可以采用这种方式 */
         <List path="list">
             <List path="/{pn:\\d+}">
@@ -31,13 +35,14 @@ render((
 ## 第二种 
 ```javascript
 let routers = {
-    '/': Login,     /*  '/'配置根地址 */
+    '__root': Login,     /*  '/'配置根地址 */
     'list': List,
     // 'list/:pn': List,
     'list/:pn(\\d+)': List,
     'aboutus':Aboutus,
     'aboutus/:a(\\S+)':Aboutus,     // switch a 根据a值在Aboutus内做逻辑操作
-    'default': Login                // default config
+    '__default': Login,                // default config
+    '__error': Error
 }
 render((
     <Router routers={routers} sign="colon" />
@@ -56,15 +61,16 @@ import Detail from './components/Detail';
 import Aboutus from './components/Aboutus';
 
 let routers = {
-    '/': Login,
+    '__root': Login,
     'list': List,
     'list/{pn}': List,
     // 'list/{pn:\\d+}': List,
     'detail/{id}': Detail,
     'detail/{id}/': Detail,
-    'default': Login,
     'aboutus':Aboutus,
-    'aboutus/{a:\\S+}':Aboutus
+    'aboutus/{a:\\S+}':Aboutus,
+    '__default': Login,
+    '__error': Error
 }
 
 render((
@@ -82,7 +88,11 @@ render((
 export default class List extends React.Component {
     constructor(props) {
         super();
+
+        // to error page
+        // this.props.toErrorPage();
     }
+
     render(){
         // get pn value
         console.log(this.props.pn)
