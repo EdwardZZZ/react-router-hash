@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import match from 'match-url';
+import React, { Component } from 'react'
+import match from 'match-url'
 
 const utils = {
     getHash() {
@@ -12,14 +12,7 @@ const utils = {
 
     isArray(obj) {
         return Array.isArray ? Array.isArray(obj) : utils.type(obj) === '[object Array]';
-    },
-
-    toArray(obj) {
-        if (!obj || utils.isArray(obj)) {
-            return obj
-        }
-        return new Array(obj)
-    },
+    }
 }
 
 export default class extends Component {
@@ -33,24 +26,24 @@ export default class extends Component {
 
     addToRouters(routers, path, children) {
         if (!children) return
-        utils.toArray(children).forEach((router) => {
-            let _path = path + router.props.path
+        [...children].forEach((router) => {
+            const _path = path + router.props.path
             routers[_path] = router.type
             this.addToRouters(routers, _path, router.props.children)
         })
     }
 
     componentWillMount() {
-        const _routers = {}, self = this
-        if (self.props.children) {
-            _routers.default = self.props.default
-            self.addToRouters(_routers, '', self.props.children)
+        const {__default, __root, __error} = this.props,
+            _routers =  {__default, __root, __error}
+        if (this.props.children) {
+            this.addToRouters(_routers, '', this.props.children)
         } else {
-            Object.assign(_routers, self.props.routers)
+            Object.assign(_routers, this.props.routers)
         }
-        self.routers = _routers
-        self.matchRoutes = []
-        self.matchRouter(this.state.route)
+        this.routers = _routers
+        this.matchRoutes = []
+        this.matchRouter(this.state.route)
     }
 
     componentDidMount() {

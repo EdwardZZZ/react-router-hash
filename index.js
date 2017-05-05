@@ -16,6 +16,8 @@ var _matchUrl2 = _interopRequireDefault(_matchUrl);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -26,14 +28,14 @@ var utils = {
     getHash: function getHash() {
         return window.location.hash.substr(1);
     },
-    isArray: function isArray(obj) {
-        return Array.isArray ? Array.isArray(obj) : Util.type(obj) === '[object Array]';
+
+
+    type: function type(obj) {
+        return Object.prototype.toString.call(obj).toLowerCase();
     },
-    toArray: function toArray(obj) {
-        if (!obj || utils.isArray(obj)) {
-            return obj;
-        }
-        return new Array(obj);
+
+    isArray: function isArray(obj) {
+        return Array.isArray ? Array.isArray(obj) : utils.type(obj) === '[object Array]';
     }
 };
 
@@ -58,7 +60,7 @@ var _class = function (_Component) {
             var _this2 = this;
 
             if (!children) return;
-            utils.toArray(children).forEach(function (router) {
+            [].concat(_toConsumableArray(children)).forEach(function (router) {
                 var _path = path + router.props.path;
                 routers[_path] = router.type;
                 _this2.addToRouters(routers, _path, router.props.children);
@@ -67,17 +69,20 @@ var _class = function (_Component) {
     }, {
         key: 'componentWillMount',
         value: function componentWillMount() {
-            var _routers = {},
-                self = this;
-            if (self.props.children) {
-                _routers.default = self.props.default;
-                self.addToRouters(_routers, '', self.props.children);
+            var _props = this.props,
+                __default = _props.__default,
+                __root = _props.__root,
+                __error = _props.__error,
+                _routers = { __default: __default, __root: __root, __error: __error };
+
+            if (this.props.children) {
+                this.addToRouters(_routers, '', this.props.children);
             } else {
-                Object.assign(_routers, self.props.routers);
+                Object.assign(_routers, this.props.routers);
             }
-            self.routers = _routers;
-            self.matchRoutes = [];
-            self.matchRouter(this.state.route);
+            this.routers = _routers;
+            this.matchRoutes = [];
+            this.matchRouter(this.state.route);
         }
     }, {
         key: 'componentDidMount',
