@@ -1,6 +1,6 @@
 {
   "name": "react-router-hash",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "A react simple router, React极简路由",
   "main": "index.js",
   "scripts": {
