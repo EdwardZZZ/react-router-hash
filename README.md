@@ -10,9 +10,9 @@ React极简路由，仅支持hash url,可以采用两种方式进行路由配置
 
 ## config   这三个参数都可以配置在Router根节点中
 
-    __root  配置根路由，也hash值为空时展示的页面
-    __default 配置默认路由，路由匹配失败时展示的页面，不配置时页面不跳转
-    __error  配置错误页面，当页面中调用this.props.toErrorPage()方法时展示的错误页面
+    __root  配置根路由，也hash值为空时展示的页面 
+    __default 配置默认路由，路由匹配失败时展示的页面，不配置时页面不跳转 
+    __error  配置错误页面，当页面中调用this.props.toErrorPage()方法时展示的错误页面 
 
 ## 第一种 支持嵌套格式
 ```javascript
