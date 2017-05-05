@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
+import match from 'match-url';
 
-let match = require('match-url')
-
-let utils = {
+const utils = {
     getHash() {
         return window.location.hash.substr(1)
     },
@@ -37,7 +36,7 @@ export default class extends Component {
     }
 
     componentWillMount() {
-        let _routers = {}, self = this
+        const _routers = {}, self = this
         if (self.props.children) {
             _routers.default = self.props.default
             self.addToRouters(_routers, '', self.props.children)
