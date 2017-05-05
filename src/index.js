@@ -5,9 +5,13 @@ const utils = {
     getHash() {
         return window.location.hash.substr(1)
     },
+    
+    type: function(obj){
+       return Object.prototype.toString.call(obj).toLowerCase();
+    },
 
     isArray(obj) {
-        return Array.isArray ? Array.isArray(obj) : Util.type(obj) === '[object Array]';
+        return Array.isArray ? Array.isArray(obj) : utils.type(obj) === '[object Array]';
     },
 
     toArray(obj) {
