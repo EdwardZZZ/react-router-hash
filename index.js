@@ -55,30 +55,20 @@ var _class = function (_Component) {
     }
 
     _createClass(_class, [{
-        key: 'addToRouters',
-        value: function addToRouters(routers, path, children) {
-            var _this2 = this;
-
-            if (!children) return;
-            [].concat(_toConsumableArray(children)).forEach(function (router) {
-                var _path = path + router.props.path;
-                routers[_path] = router.type;
-                _this2.addToRouters(routers, _path, router.props.children);
-            });
-        }
-    }, {
         key: 'componentWillMount',
         value: function componentWillMount() {
             var _props = this.props,
                 __default = _props.__default,
                 __root = _props.__root,
                 __error = _props.__error,
+                children = _props.children,
+                routers = _props.routers,
                 _routers = { __default: __default, __root: __root, __error: __error };
 
-            if (this.props.children) {
-                this.addToRouters(_routers, '', this.props.children);
+            if (children) {
+                this.addToRouters(_routers, '', children);
             } else {
-                Object.assign(_routers, this.props.routers);
+                Object.assign(_routers, routers);
             }
             this.routers = _routers;
             this.matchRoutes = [];
@@ -87,14 +77,22 @@ var _class = function (_Component) {
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            var _this3 = this;
+            var _this2 = this;
 
             window.addEventListener('hashchange', function () {
-                _this3.setState({
+                _this2.setState({
                     error: false,
                     route: utils.getHash()
                 });
             });
+        }
+    }, {
+        key: 'componentWillUpdate',
+        value: function componentWillUpdate(nextProps, nextState) {
+            if (nextState.error) {
+                this.Component = this.routers['__error'];
+                if (!this.Component) throw new Error('This router\'config has not  "__error" word.');
+            }
         }
     }, {
         key: 'shouldComponentUpdate',
@@ -105,6 +103,28 @@ var _class = function (_Component) {
 
             this.matchRouter(props[1].route);
             return !!this.Component;
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this3 = this;
+
+            if (!this.Component) throw new Error('This route has not match component.', this.state.route);
+            if (!this.state.error) this.routeProps.toErrorPage = function () {
+                _this3.setState({ error: true });
+            };
+            return _react2.default.createElement(this.Component, this.routeProps);
+        }
+    }, {
+        key: 'addToRouters',
+        value: function addToRouters(routers, path, children) {
+            var _this4 = this;
+
+            if (!children) return [].concat(_toConsumableArray(children)).forEach(function (router) {
+                var _path = path + router.props.path;
+                routers[_path] = router.type;
+                _this4.addToRouters(routers, _path, router.props.children);
+            });
         }
     }, {
         key: 'matchRouter',
@@ -163,22 +183,6 @@ var _class = function (_Component) {
 
             this.Component = Component;
             this.routeProps = routeParams;
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var _this4 = this;
-
-            if (!this.Component) throw new Error('This route has not match component.', this.state.route);
-            if (this.state.error) {
-                this.Component = this.routers['__error'];
-                if (!this.Component) throw new Error('This route has not config "__error".');
-            } else {
-                this.routeProps.toErrorPage = function () {
-                    _this4.setState({ error: true });
-                };
-            }
-            return _react2.default.createElement(this.Component, this.routeProps);
         }
     }]);
 

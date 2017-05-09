@@ -10,9 +10,18 @@ React极简路由，仅支持hash url,可以采用两种方式进行路由配置
 
 ## config   这三个参数都可以配置在Router根节点中
 
-    __root  配置根路由，也hash值为空时展示的页面 
-    __default 配置默认路由，路由匹配失败时展示的页面，不配置时页面不跳转 
-    __error  配置错误页面，当页面中调用this.props.toErrorPage()方法时展示的错误页面 
+### config
+```
+__root  配置根路由，也hash值为空时展示的页面 
+__default 配置默认路由，路由匹配失败时展示的页面，不配置时页面不跳转 
+__error  配置错误页面，当页面中调用this.props.toErrorPage()方法时展示的错误页面 
+```
+
+### props
+```
+__params 获取hash url的参数，例如#a?a=1 中，this.props.__params 为 a=1
+其它路由参数是按别名获取，例如配置path={a}, 实际路径为/index，this.props.a的值是'index'
+```
 
 ## 第一种 支持嵌套格式
 ```javascript
